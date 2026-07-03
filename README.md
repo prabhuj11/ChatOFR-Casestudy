@@ -10,8 +10,8 @@ I'm Prabhu Jayasimha, an AI Product Manager who builds working proof-of-concepts
 
 | File | Description |
 |---|---|
-| [`index.html`](index.html) | The full case study — the 45-day onboarding problem, why leadership had missed the opportunity, the six nested pilots I sequenced across five agencies, the launch-timing disagreement with leadership, the metrics that mattered, and what I'd do differently. |
-| [`case-study-summary.html`](case-study-summary.html) | A condensed version of the same story — before/after impact, how the agentic AI orchestrates across systems, and the discovery-to-deployment timeline. |
+| [`ChatOFR - Casestudy -1.html`](<ChatOFR - Casestudy -1.html>) | The full case study — the 45-day onboarding problem, why leadership had missed the opportunity, the six nested pilots I sequenced across five agencies, the launch-timing disagreement with leadership, the metrics that mattered, and what I'd do differently. |
+| [`ChatOFR - Casestudy -2.html`](<ChatOFR - Casestudy -2.html>) | A condensed version of the same story — before/after impact, how the agentic AI orchestrates across systems, and the discovery-to-deployment timeline. |
 
 ## The short version
 
@@ -19,11 +19,11 @@ Federal researchers were waiting **45 days** just to start doing their job. Chat
 
 ## View it live
 
-Open either file directly in a browser, or enable **GitHub Pages** on this repo (Settings → Pages → Deploy from branch → `main`) to get shareable links like:
+This repo is served via **GitHub Pages**:
 
 ```
-https://<your-username>.github.io/ChatOFR-Casestudy/
-https://<your-username>.github.io/ChatOFR-Casestudy/case-study-summary.html
+https://prabhuj11.github.io/ChatOFR-Casestudy/ChatOFR%20-%20Casestudy%20-1.html
+https://prabhuj11.github.io/ChatOFR-Casestudy/ChatOFR%20-%20Casestudy%20-2.html
 ```
 
 ## Contact
