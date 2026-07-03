@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatOFR Case Study — Agentic AI for Federal Researcher Onboarding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2d5a87;
+            --accent: #00a896;
+            --accent-glow: rgba(0, 168, 150, 0.15);
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --gradient-start: #1a3a5c;
+            --gradient-end: #0d2137;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white; padding: 80px 20px 100px; position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(0,168,150,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
+        .hero-content { max-width: 1000px; margin: 0 auto; position: relative; z-index: 1; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 500; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.2); }
+        .badge .dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .hero h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.1; margin-bottom: 16px; letter-spacing: -0.02em; }
+        .hero h1 span { color: var(--accent); }
+        .hero-subtitle { font-size: 1.25rem; opacity: 0.85; max-width: 600px; margin-bottom: 40px; font-weight: 300; }
+        .meta-row { display: flex; flex-wrap: wrap; gap: 24px; font-size: 0.9rem; opacity: 0.7; }
+        .meta-item { display: flex; align-items: center; gap: 8px; }
+
+        /* Metrics */
+        .metrics-bar {
+            background: var(--card); margin: -40px auto 60px; max-width: 900px; border-radius: 16px;
+            padding: 32px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08); position: relative; z-index: 2; border: 1px solid var(--border);
+        }
+        .metric { text-align: center; }
+        .metric-value { font-size: 2.5rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; }
+        .metric-value .suffix { font-size: 1.2rem; color: var(--accent); }
+        .metric-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        .metric-delta { display: inline-flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-top: 4px; }
+
+        /* Sections */
+        .section { max-width: 900px; margin: 0 auto 80px; padding: 0 20px; }
+        .section-header { margin-bottom: 40px; }
+        .section-tag { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 8px; }
+        .section h2 { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+        .section p { color: var(--text-muted); font-size: 1.05rem; max-width: 640px; }
+
+        /* Problem Cards */
+        .problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 32px; }
+        .problem-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; transition: all 0.3s ease; }
+        .problem-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); border-color: var(--accent); }
+        .problem-icon { width: 44px; height: 44px; background: var(--accent-glow); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 1.3rem; }
+        .problem-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: var(--primary); }
+        .problem-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+
+        /* Comparison */
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px; }
+        .comparison-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+        .comparison-box.before { border-left: 4px solid #ef4444; }
+        .comparison-box.after { border-left: 4px solid var(--accent); }
+        .comparison-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+        .comparison-box.before .comparison-label { color: #ef4444; }
+        .comparison-box.after .comparison-label { color: var(--accent); }
+        .comparison-value { font-size: 2rem; font-weight: 800; color: var(--primary); font-family: 'JetBrains Mono', monospace; margin-bottom: 8px; }
+        .comparison-list { list-style: none; font-size: 0.9rem; color: var(--text-muted); }
+        .comparison-list li { padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+        .comparison-list li:last-child { border-bottom: none; }
+        .comparison-list .x { color: #ef4444; }
+        .comparison-list .check { color: var(--accent); }
+
+        /* Workflow — T-Shape Design */
+        .workflow-container { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-top: 32px; }
+        .workflow-title { text-align: center; font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: 40px; }
+
+        .workflow-stage { text-align: center; margin-bottom: 16px; font-size: 0.8rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; min-height: 20px; }
+
+        .workflow-main { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; }
+        .workflow-branch { display: flex; align-items: flex-start; justify-content: center; gap: 60px; margin-top: 8px; position: relative; }
+
+        .workflow-node {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border: 2px solid var(--border); border-radius: 12px; padding: 18px 24px;
+            min-width: 160px; text-align: center; font-weight: 600; font-size: 0.9rem;
+            color: var(--primary); transition: all 0.4s ease; position: relative; z-index: 2;
+        }
+        .workflow-node.active {
+            background: linear-gradient(135deg, var(--accent) 0%, #008b7a 100%);
+            color: white; border-color: var(--accent); box-shadow: 0 0 24px var(--accent-glow); transform: scale(1.06);
+        }
+        .workflow-node.ai-core {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white; border-color: var(--primary); min-width: 180px; font-size: 1rem;
+        }
+        .workflow-node.ai-core.active {
+            background: linear-gradient(135deg, var(--accent) 0%, #008b7a 100%);
+            border-color: var(--accent);
+        }
+        .workflow-node.backend {
+            min-width: 150px; font-size: 0.85rem; padding: 14px 18px;
+        }
+        .workflow-node.backend.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-color: #3b82f6; color: white;
+        }
+
+        .workflow-arrow { color: var(--text-muted); font-size: 1.4rem; animation: flow 2s infinite; }
+        @keyframes flow { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        /* Connector lines for T-shape */
+        .connector-down {
+            width: 2px; height: 24px; background: var(--border); margin: 0 auto;
+            transition: all 0.4s ease;
+        }
+        .connector-down.active { background: var(--accent); }
+        .connector-h {
+            height: 2px; background: var(--border); position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 0; transition: width 0.4s ease;
+        }
+        .connector-h.active { width: 200px; background: var(--accent); }
+
+        .workflow-status {
+            text-align: center; margin-top: 28px; padding: 16px;
+            background: var(--bg); border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+            color: var(--primary); min-height: 50px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .workflow-controls { display: flex; justify-content: center; gap: 12px; margin-top: 20px; }
+        .btn { padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; border: none; font-family: 'Inter', sans-serif; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); }
+        .btn-secondary { background: var(--bg); color: var(--primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--border); }
+
+        /* Timeline */
+        .timeline { position: relative; margin-top: 40px; padding-left: 32px; }
+        .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent), var(--border)); }
+        .timeline-item { position: relative; margin-bottom: 32px; padding-left: 24px; opacity: 0; transform: translateX(20px); transition: all 0.5s ease; }
+        .timeline-item.visible { opacity: 1; transform: translateX(0); }
+        .timeline-item::before { content: ''; position: absolute; left: -28px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 3px solid var(--card); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .timeline-date { font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+        .timeline-title { font-weight: 600; color: var(--primary); margin-bottom: 4px; }
+        .timeline-desc { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* Quote */
+        .quote-block {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white; padding: 48px 40px; border-radius: 16px; margin: 60px auto; max-width: 900px;
+            position: relative; text-align: center;
+        }
+        .quote-block::before { content: '"'; font-size: 6rem; position: absolute; top: -20px; left: 30px; opacity: 0.2; font-family: serif; line-height: 1; }
+        .quote-text { font-size: 1.3rem; font-weight: 300; line-height: 1.5; font-style: italic; margin-bottom: 20px; }
+        .quote-author { font-size: 0.9rem; opacity: 0.7; }
+
+        /* Footer */
+        .footer { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); max-width: 900px; margin: 0 auto; }
+        .footer a { color: var(--primary); text-decoration: none; font-weight: 500; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 2rem; }
+            .hero-subtitle { font-size: 1rem; }
+            .comparison { grid-template-columns: 1fr; }
+            .workflow-main { flex-direction: column; gap: 8px; }
+            .workflow-branch { flex-direction: column; align-items: center; gap: 16px; }
+            .workflow-arrow { transform: rotate(90deg); }
+            .metrics-bar { grid-template-columns: 1fr 1fr; padding: 24px; }
+            .connector-h { display: none; }
+        }
+
+        .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="badge"><span class="dot"></span>Case Study — U.S. Department of the Treasury</div>
+            <h1>ChatOFR: <span>Agentic AI</span> for Federal Researcher Onboarding</h1>
+            <p class="hero-subtitle">How we reduced researcher onboarding from 45 days to 12 days using Claude Sonnet to orchestrate provisioning across ServiceNow and Collibra.</p>
+            <div class="meta-row">
+                <div class="meta-item">👤 Senior Product Manager, OFR</div>
+                <div class="meta-item">📅 Jan 2024 – Oct 2025</div>
+                <div class="meta-item">🏛️ 5 Federal Agencies (FRB, FDIC, OCC, SEC, OFR)</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="metrics-bar">
+        <div class="metric">
+            <div class="metric-value" id="metric-73">0</div>
+            <div class="metric-label">Faster Onboarding</div>
+            <div class="metric-delta">↓ 45 days → 12 days</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value" id="metric-5">0</div>
+            <div class="metric-label">Agencies Connected</div>
+            <div class="metric-delta">First-ever unified platform</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value" id="metric-3">0</div>
+            <div class="metric-label">Public Products Powered</div>
+            <div class="metric-delta">Global consumption</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value" id="metric-0">0</div>
+            <div class="metric-label">Security Incidents</div>
+            <div class="metric-delta">FedRAMP-adjacent</div>
+        </div>
+    </div>
+
+    <section class="section fade-in">
+        <div class="section-header">
+            <div class="section-tag">01 — The Problem</div>
+            <h2>Researchers Were Waiting 45 Days to Do Their Job</h2>
+            <p>The JADE platform was live, but adoption was stalling. Researchers were still emailing Excel files and using legacy tools. The bottleneck wasn't the platform — it was the onboarding.</p>
+        </div>
+        <div class="problem-grid">
+            <div class="problem-card">
+                <div class="problem-icon">🔒</div>
+                <h3>Fragmented Provisioning</h3>
+                <p>New researchers needed accounts across ServiceNow and Collibra — each with separate approval chains and manual enrollment steps.</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">⏱️</div>
+                <h3>45-Day Wait Time</h3>
+                <p>Manual provisioning across two systems meant researchers waited over a month before they could access data or begin analysis.</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🏛️</div>
+                <h3>Interagency Complexity</h3>
+                <p>Each of the 5 agencies had different security classifications, governance rules, and bureaucratic processes.</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">📉</div>
+                <h3>Adoption Stall</h3>
+                <p>Despite launching a secure multi-agency platform, Q1 adoption was flat. Researchers defaulted to familiar, inefficient workflows.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section fade-in">
+        <div class="section-header">
+            <div class="section-tag">02 — The Impact</div>
+            <h2>Before vs. After ChatOFR</h2>
+        </div>
+        <div class="comparison">
+            <div class="comparison-box before">
+                <div class="comparison-label">Before — Manual Process</div>
+                <div class="comparison-value">45 days</div>
+                <ul class="comparison-list">
+                    <li><span class="x">✕</span> Manual ticket creation in ServiceNow</li>
+                    <li><span class="x">✕</span> Separate Collibra metadata enrollment</li>
+                    <li><span class="x">✕</span> No visibility into status</li>
+                    <li><span class="x">✕</span> Researchers followed up via email</li>
+                </ul>
+            </div>
+            <div class="comparison-box after">
+                <div class="comparison-label">After — Agentic AI</div>
+                <div class="comparison-value">12 days</div>
+                <ul class="comparison-list">
+                    <li><span class="check">✓</span> Single conversational interface</li>
+                    <li><span class="check">✓</span> AI routes to ServiceNow or Collibra</li>
+                    <li><span class="check">✓</span> Real-time status tracking</li>
+                    <li><span class="check">✓</span> Proactive follow-up & escalation</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="section fade-in">
+        <div class="section-header">
+            <div class="section-tag">03 — The Solution</div>
+            <h2>An Agentic AI That Orchestrates Across Systems</h2>
+            <p>ChatOFR isn't a chatbot. It's an agentic AI product that uses Claude Sonnet to understand researcher intent, route requests to the right backend system, and maintain audit trails for federal compliance.</p>
+        </div>
+        <div class="workflow-container">
+            <div class="workflow-title">Interactive Workflow — Click "Run Simulation" to see the agent in action</div>
+
+            <div class="workflow-stage" id="stage-label">Ready to simulate</div>
+
+            <!-- Main flow: Researcher → ChatOFR → Access Granted -->
+            <div class="workflow-main">
+                <div class="workflow-node" id="node-researcher">👤 Researcher</div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-node ai-core" id="node-chatoft">🤖 ChatOFR<br><small>Claude Sonnet</small></div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-node" id="node-access">✅ Access Granted</div>
+            </div>
+
+            <!-- Down connector from ChatOFR -->
+            <div class="connector-down" id="conn-down"></div>
+
+            <!-- Branch: ServiceNow | Collibra -->
+            <div class="workflow-branch">
+                <div class="workflow-node backend" id="node-snow">🎫 ServiceNow<br><small>Software & Tools</small></div>
+                <div class="workflow-node backend" id="node-collibra">📊 Collibra<br><small>Datasets</small></div>
+            </div>
+
+            <div class="workflow-status" id="status">Click "Run Simulation" to see how ChatOFR routes and orchestrates onboarding</div>
+            <div class="workflow-controls">
+                <button class="btn btn-primary" onclick="runSimulation()">▶ Run Simulation</button>
+                <button class="btn btn-secondary" onclick="resetSimulation()">↺ Reset</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-tag">04 — How We Got Here</div>
+            <h2>From Discovery to Deployment</h2>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">Week 1–2</div>
+                <div class="timeline-title">Ride-Alongs & Discovery</div>
+                <div class="timeline-desc">Spent 2 weeks shadowing researchers across OFR, FRB, and FDIC. Discovered the 45-day onboarding bottleneck was the #1 reason for low adoption.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Week 3–4</div>
+                <div class="timeline-title">Problem Reframing</div>
+                <div class="timeline-desc">Reframed the problem from "build a better platform" to "remove friction from getting started." Identified 2 systems that needed orchestration.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Week 5–8</div>
+                <div class="timeline-title">MVP Design & Prototyping</div>
+                <div class="timeline-desc">Designed conversational interface using Claude Sonnet. Built API connectors to ServiceNow and Collibra. Implemented audit logging for federal compliance.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Week 9–10</div>
+                <div class="timeline-title">Pilot & Validation</div>
+                <div class="timeline-desc">Ran pilot with 12 researchers. Measured onboarding time, error rates, and satisfaction. Iterated based on feedback.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Week 11–12</div>
+                <div class="timeline-title">Launch & Scale</div>
+                <div class="timeline-desc">Rolled out to all 5 agencies. Onboarding dropped from 45 days to 12 days. Adoption tripled in the following quarter.</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="quote-block">
+        <div class="quote-text">The hardest problems in government technology aren't technical — they're human. You have to build trust before you build software. ChatOFR proved that AI can be a bridge, not just a tool.</div>
+        <div class="quote-author">— Product Principle from the JADE & ChatOFR Initiative</div>
+    </div>
+
+    <section class="section fade-in">
+        <div class="section-header">
+            <div class="section-tag">05 — Lessons</div>
+            <h2>What I Learned</h2>
+        </div>
+        <div class="problem-grid">
+            <div class="problem-card">
+                <div class="problem-icon">🎯</div>
+                <h3>Trust is a Feature</h3>
+                <p>In federal government, security and governance aren't blockers — they're user needs. We designed audit trails and data governance as first-class features, not afterthoughts.</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🔍</div>
+                <h3>Discovery Before Design</h3>
+                <p>The 45-day onboarding problem was invisible until we did ride-alongs. Assumptions are expensive. Evidence is cheap. Always validate workflows before building.</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🚀</div>
+                <h3>Launch is the Beginning</h3>
+                <p>JADE was technically successful but adoption was flat until we solved onboarding. The best product managers don't ship and walk away — they iterate based on real usage.</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🤖</div>
+                <h3>Agentic AI, Not Just Chat</h3>
+                <p>ChatOFR isn't a chatbot — it's an agent that orchestrates actions across systems. The future of government UX isn't more dashboards; it's intelligent, conversational interfaces.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="footer">
+        <p>Case Study by <strong>Prabhu Jayasimha</strong> · Senior Product Manager · U.S. Treasury OFR · <a href="https://www.linkedin.com/in/prabhujayasimha" target="_blank">LinkedIn</a></p>
+        <p style="margin-top:8px; opacity:0.6;">Built for the CivicActions Senior Product Manager interview process</p>
+    </div>
+
+    <script>
+        // Animated counters
+        function animateCounter(id, target, suffix) {
+            const el = document.getElementById(id);
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    el.innerHTML = target + (suffix || '');
+                    clearInterval(timer);
+                } else {
+                    el.innerHTML = Math.floor(current) + (suffix || '');
+                }
+            }, 30);
+        }
+
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const id = el.id;
+                    if (id === 'metric-73') animateCounter(id, 73, '<span class="suffix">%</span>');
+                    else if (id === 'metric-5') animateCounter(id, 5, '');
+                    else if (id === 'metric-3') animateCounter(id, 3, '');
+                    else if (id === 'metric-0') animateCounter(id, 0, '');
+                    counterObserver.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.metric-value').forEach(el => counterObserver.observe(el));
+
+        // Fade in on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        fadeElements.forEach(el => fadeObserver.observe(el));
+
+        // Timeline animation
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        const timelineObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), index * 150);
+                }
+            });
+        }, { threshold: 0.2 });
+        timelineItems.forEach(item => timelineObserver.observe(item));
+
+        // Workflow simulation
+        let simulationStep = 0;
+        const steps = [
+            { label: "Step 1: Request", text: "👤 Researcher submits request via ChatOFR: 'I need access to the Bank Systemic Risk dataset and Python Jupyter environment'", active: ['node-researcher'] },
+            { label: "Step 2: Intent Parsing", text: "🤖 Claude Sonnet parses intent: Dataset request → Collibra | Software request → ServiceNow", active: ['node-chatoft'] },
+            { label: "Step 3: ServiceNow Route", text: "🎫 ChatOFR auto-creates ServiceNow ticket for Jupyter environment provisioning with correct routing and priority", active: ['node-snow'] },
+            { label: "Step 4: Collibra Route", text: "📊 ChatOFR provisions Collibra metadata profile with appropriate data access entitlements for the dataset", active: ['node-collibra'] },
+            { label: "Step 5: Access Granted", text: "✅ Both systems confirm. Researcher receives unified access confirmation and training links in 12 days.", active: ['node-access'] }
+        ];
+
+        function runSimulation() {
+            const allNodes = document.querySelectorAll('.workflow-node, .connector-down');
+            const status = document.getElementById('status');
+            const stage = document.getElementById('stage-label');
+            const conn = document.getElementById('conn-down');
+
+            if (simulationStep >= steps.length) {
+                resetSimulation();
+                setTimeout(runSimulation, 300);
+                return;
+            }
+
+            allNodes.forEach(n => n.classList.remove('active'));
+
+            const step = steps[simulationStep];
+            stage.textContent = step.label;
+            status.textContent = step.text;
+            status.style.background = 'linear-gradient(90deg, var(--accent-glow), transparent)';
+
+            step.active.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('active');
+            });
+
+            // Light up connector when ChatOFR is active
+            if (step.active.includes('node-chatoft')) {
+                conn.classList.add('active');
+            }
+
+            simulationStep++;
+
+            if (simulationStep < steps.length) {
+                setTimeout(runSimulation, 2200);
+            } else {
+                setTimeout(() => {
+                    status.style.background = 'var(--bg)';
+                    status.textContent = "🎉 Simulation complete! ChatOFR routed the request to both ServiceNow and Collibra simultaneously. Onboarding time: 12 days.";
+                    stage.textContent = "Complete";
+                }, 2200);
+            }
+        }
+
+        function resetSimulation() {
+            simulationStep = 0;
+            document.querySelectorAll('.workflow-node, .connector-down').forEach(n => n.classList.remove('active'));
+            document.getElementById('status').textContent = 'Click "Run Simulation" to see how ChatOFR routes and orchestrates onboarding';
+            document.getElementById('status').style.background = 'var(--bg)';
+            document.getElementById('stage-label').textContent = 'Ready to simulate';
+        }
+    </script>
+</body>
+</html>
